@@ -11,14 +11,17 @@ export default function(WrappedComponent) {
 
       const isLandscape = isOrientationLandscape(Dimensions.get('window'));
       this.state = { isLandscape };
+      this.eventSubscription = null;
     }
 
     componentDidMount() {
-      Dimensions.addEventListener('change', this.handleOrientationChange);
+      this.eventSubscription = Dimensions.addEventListener('change', this.handleOrientationChange);
     }
 
     componentWillUnmount() {
-      Dimensions.removeEventListener('change', this.handleOrientationChange);
+      if (this.eventSubscription) {
+        this.eventSubscription.remove();
+      }
     }
 
     handleOrientationChange = ({ window }) => {
