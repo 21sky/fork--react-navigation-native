@@ -100,6 +100,8 @@ export default function createNavigationContainer(Component) {
       this.state = {
         nav: this._isStateful() && !props.loadNavigationState ? Component.router.getStateForAction(this._initialAction) : null
       };
+
+      this.eventSubscription = null;
     }
 
     _renderLoading() {
@@ -171,7 +173,7 @@ export default function createNavigationContainer(Component) {
         }
       }
       _statefulContainerCount++;
-      Linking.addEventListener('url', this._handleOpenURL);
+      this.eventSubscription = Linking.addEventListener('url', this._handleOpenURL);
 
       // Pull out anything that can impact state
       let parsedUrl = null;
@@ -266,7 +268,7 @@ export default function createNavigationContainer(Component) {
 
     componentWillUnmount() {
       this._isMounted = false;
-      Linking.removeEventListener('url', this._handleOpenURL);
+      this.eventSubscription && this.eventSubscription.remove();
       this.subs && this.subs.remove();
 
       if (this._isStateful()) {

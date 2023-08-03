@@ -19,9 +19,7 @@ export default function (WrappedComponent) {
     }
 
     componentWillUnmount() {
-      if (this.eventSubscription) {
-        this.eventSubscription.remove();
-      }
+      this.eventSubscription && this.eventSubscription.remove();
     }
 
     handleOrientationChange = ({ window }) => {
